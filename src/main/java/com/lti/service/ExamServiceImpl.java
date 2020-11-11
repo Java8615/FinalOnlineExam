@@ -1,13 +1,9 @@
 package com.lti.service;
 
-import javax.mail.search.SubjectTerm;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
-import com.lti.entity.Result;
-import com.lti.entity.SubjectType;
 import com.lti.entity.User;
 import com.lti.exception.UserException;
 import com.lti.repository.UserRepository;
@@ -33,22 +29,6 @@ public class ExamServiceImpl implements ExamService {
 			throw new UserException("Customer already registered!");
 	}
 
-
-	@Override
-	public void addResult(Result result, int id) {
-		int id1 = userRepo.addResult(result, id);
-		int l1s = result.getLevel1Result();
-		int l2s = result.getLevel2Result();
-		int l3s = result.getLevel3Result();
-		int tots = result.getTotalScore();
-		SubjectType sub = result.getSubjectId();
-		String name =  result.getUser().getFullName();
-		String email = result.getUser().getEmail();
-		String text = "Test Completed, "+name+". Your result for Subject "+sub+" is : Level 1: "+l1s+" Level 2: "+l2s+" Level 3: "+l3s+". Your total score is = "+tots+".";
-		String subject  = "Report Card for Test: "+sub;
-		emailService.sendEmailForNewRegistration(email, text, subject);
-	}
-	
 	/*
 	 * @Override public void forgotPwd(String email, String phone) { String psw =
 	 * userRepo.forgotPassword(email, phone); if(psw!="abcd") { String text =
