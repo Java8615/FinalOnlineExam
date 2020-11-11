@@ -38,24 +38,7 @@ public class UserController {
 		}
 	}
 
-	@PostMapping("/login")
-	public LoginStatus login(@RequestBody LoginDto loginDto) {
-		try {
-			User user = examService.login(loginDto.getEmail(), loginDto.getPassword());
-			LoginStatus loginStatus = new LoginStatus();
-			loginStatus.setStatus(StatusType.SUCCESS);
-			loginStatus.setMessage("Login Successful!");
-			loginStatus.setCustomerId(user.getUserId());
-			loginStatus.setName(user.getFullName());
-			return loginStatus;
-		} catch (UserException e) {
-			LoginStatus loginStatus = new LoginStatus();
-			loginStatus.setStatus(StatusType.FAILURE);
-			loginStatus.setMessage(e.getMessage());
-			return loginStatus;
-		}
-	}
-
+	
 	@PostMapping("/forgot_password")
 	public Status forgotPsw(@RequestBody ForgotPasswordDto forgotPasswordDto) {
 		try {
