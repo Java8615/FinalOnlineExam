@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.lti.dto.ForgotPasswordDto;
 import com.lti.dto.LoginDto;
 import com.lti.dto.LoginStatus;
+import com.lti.dto.ResultDto;
 import com.lti.dto.Status;
 import com.lti.dto.Status.StatusType;
 import com.lti.entity.User;
@@ -31,6 +32,22 @@ public class UserController {
 			status.setMessage("Registration successful!");
 			return status;
 		} catch (UserException e) {
+			Status status = new Status();
+			status.setStatus(StatusType.FAILURE);
+			status.setMessage(e.getMessage());
+			return status;
+		}
+	}
+	
+	@PostMapping(path = "/addResult")
+	public Status addResult(@RequestBody ResultDto resultdto) {
+		try {
+			examService.addResult(resultdto.getResult(), resultdto.getId());
+			Status status = new Status();
+			status.setStatus(StatusType.SUCCESS);
+			status.setMessage("Registration successful!");
+			return status;
+		}catch (UserException e) {
 			Status status = new Status();
 			status.setStatus(StatusType.FAILURE);
 			status.setMessage(e.getMessage());
