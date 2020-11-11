@@ -9,6 +9,7 @@ import javax.transaction.Transactional;
 
 import org.springframework.stereotype.Repository;
 
+import com.lti.entity.Result;
 import com.lti.entity.User;
 
 @Repository
@@ -26,7 +27,6 @@ public class UserRepositoryImpl implements UserRepository {
 
 	@Override
 	public User findById(int id) {
-		// TODO Auto-generated method stub
 		return em.find(User.class, id);
 	}
 
@@ -65,4 +65,16 @@ public class UserRepositoryImpl implements UserRepository {
 			return "abcd";
 		}
 	}
+
+	@Override
+	@Transactional
+	public int addResult(Result result, int id) {
+		User user = findById(id);
+		result.setUser(user);
+		em.merge(result);
+		return result.getResultId();
+	}
+	
+
+	
 }
