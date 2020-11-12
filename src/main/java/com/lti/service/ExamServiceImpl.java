@@ -1,9 +1,15 @@
 package com.lti.service;
 
+import java.util.List;
+
+import javax.mail.search.SubjectTerm;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import com.lti.entity.Result;
+import com.lti.entity.SubjectType;
 import com.lti.entity.User;
 import com.lti.exception.UserException;
 import com.lti.repository.UserRepository;
@@ -29,6 +35,22 @@ public class ExamServiceImpl implements ExamService {
 			throw new UserException("Customer already registered!");
 	}
 
+
+	@Override
+	public void addResult(Result result, int id) {
+		int id1 = userRepo.addResult(result, id);
+		int l1s = result.getLevel1Result();
+		int l2s = result.getLevel2Result();
+		int l3s = result.getLevel3Result();
+		int tots = result.getTotalScore();
+		SubjectType sub = result.getSubjectId();
+		String name =  result.getUser().getFullName();
+		String email = result.getUser().getEmail();
+		String text = "Test Completed, "+name+". Your result for Subject "+sub+" is : Level 1: "+l1s+" Level 2: "+l2s+" Level 3: "+l3s+". Your total score is = "+tots+".";
+		String subject  = "Report Card for Test: "+sub;
+		emailService.sendEmailForNewRegistration(email, text, subject);
+	}
+	
 	/*
 	 * @Override public void forgotPwd(String email, String phone) { String psw =
 	 * userRepo.forgotPassword(email, phone); if(psw!="abcd") { String text =
@@ -70,6 +92,14 @@ public class ExamServiceImpl implements ExamService {
 	}
 
 	@Override
+	public int getUserIdByEmailAndPassword(String email, String password) {
+			if (!userRepo.isUserPresent(email))
+				throw new UserException("User not registered!");
+			int id = userRepo.findByEmailAndPassword(email, password);
+			return id;
+	}
+	
+	@Override
 	public User get(int id) {
 		return userRepo.findById(id);
 	}
@@ -77,6 +107,15 @@ public class ExamServiceImpl implements ExamService {
 	@Override
 	public void update(User user) {
 		userRepo.save(user);
+	}
+	
+	@Override
+	public List<User> searchStudentByCondition(SubjectType sub, String state, String city, int marks) {
+		try {
+			return userRepo.searchStudentByCondition(sub, state, city, marks);
+		}catch (Exception e) {
+			throw new UserException("No such data found");
+		}
 	}
 
 }
