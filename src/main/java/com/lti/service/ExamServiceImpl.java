@@ -1,5 +1,7 @@
 package com.lti.service;
 
+import java.util.List;
+
 import javax.mail.search.SubjectTerm;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,6 +92,14 @@ public class ExamServiceImpl implements ExamService {
 	}
 
 	@Override
+	public int getUserIdByEmailAndPassword(String email, String password) {
+			if (!userRepo.isUserPresent(email))
+				throw new UserException("User not registered!");
+			int id = userRepo.findByEmailAndPassword(email, password);
+			return id;
+	}
+	
+	@Override
 	public User get(int id) {
 		return userRepo.findById(id);
 	}
@@ -97,6 +107,15 @@ public class ExamServiceImpl implements ExamService {
 	@Override
 	public void update(User user) {
 		userRepo.save(user);
+	}
+	
+	@Override
+	public List<User> searchStudentByCondition(SubjectType sub, String state, String city, int marks) {
+		try {
+			return userRepo.searchStudentByCondition(sub, state, city, marks);
+		}catch (Exception e) {
+			throw new UserException("No such data found");
+		}
 	}
 
 }
